@@ -1,0 +1,523 @@
+# Setup for CircuitSetup 6 channel energy monitor
+# https://esphome.io/components/sensor/atm90e32.html?highlight=circuitsetup
+# 
+# Current Transformer gain settings:
+# 80A/26.6mA SCT-010: 41660
+# 120A/40mA: SCT-016: 41787
+# 120A/40mA: SCT-016: 21274   # (1/2 and 2x in filter)
+# 200A/100mA SCT-024: 27518
+# 200A/100mA SCT-024:  9455   # (1/3 and 3x in filter)
+# Jameco 9VAC Transformer ACU090100/157041: 7350
+
+substitutions:
+  # Node naming
+  device_name: 'cs24'
+  
+  # Voltage calibration constants
+  calibration_v1: '7390'
+  calibration_v2: '7390'
+  
+  # CT calibrtion constants
+  calibration_ct11: '9455'   # 200A/100mA SCT-024 (divide by 3 and filter by 3)
+  calibration_ct12: '9455'   # 200A/100mA SCT-024
+  calibration_ct13: '41800'  # 120A/40mA: SCT-016 (all the rest)
+  calibration_ct14: '41800'
+  calibration_ct15: '41800'
+  calibration_ct16: '41800'
+  calibration_ct21: '41800'
+  calibration_ct22: '41800'
+  calibration_ct23: '41800'
+  calibration_ct24: '41800'
+  calibration_ct25: '41800'
+  calibration_ct26: '41800'
+  calibration_ct31: '41800'
+  calibration_ct32: '41800'
+  calibration_ct33: '41800'
+  calibration_ct34: '41800'
+  calibration_ct35: '41800'
+  calibration_ct36: '41800'
+  calibration_ct41: '41800'
+  calibration_ct42: '41800'
+  calibration_ct43: '41800'
+  calibration_ct44: '41800'
+  calibration_ct45: '41800'
+  calibration_ct46: '41800'
+  
+  # Update intervals
+  update_sensors: 10s
+  update_temperature: 30s
+  update_wifi: 60s
+  
+  # Adjust naming
+  name_ct11: 'ct11'
+  name_ct12: 'ct12'
+  name_ct13: 'ct13'
+  name_ct14: 'ct14'
+  name_ct15: 'ct15'
+  name_ct16: 'ct16'
+  name_ct21: 'ct21'
+  name_ct22: 'ct22'
+  name_ct23: 'ct23'
+  name_ct24: 'ct24'
+  name_ct25: 'ct25'
+  name_ct26: 'ct26'
+  name_ct31: 'ct31'
+  name_ct32: 'ct32'
+  name_ct33: 'ct33'
+  name_ct34: 'ct34'
+  name_ct35: 'ct35'
+  name_ct36: 'ct36'
+  name_ct41: 'ct41'
+  name_ct42: 'ct42'
+  name_ct43: 'ct43'
+  name_ct44: 'ct44'
+  name_ct45: 'ct45'
+  name_ct46: 'ct46'
+
+
+# Device setup 
+esphome:
+  name: ${device_name}
+  platform: ESP32
+  board: nodemcu-32s
+
+# Wifi connection
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  #manual_ip:
+  #  static_ip: !secret cs24_static_ip
+  #  gateway: !secret wifi_gateway
+  #  subnet: !secret wifi_subnet
+
+# MQTT broker setup
+mqtt:
+  broker: !secret mqtt_broker 
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  topic_prefix: ${device_name}
+
+# Enable logging
+#logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow over the air updates
+ota:
+
+# Port used for the ESPHome dashboard
+web_server:
+  port: 80
+
+# Pin assignments
+spi:
+  clk_pin: 18
+  miso_pin: 19
+  mosi_pin: 23
+
+sensor:
+  # WiFi
+  - platform: wifi_signal
+    name:  ${device_name}_wifi
+    update_interval: ${update_wifi}
+    unit_of_measurement: dB
+
+  # Main board - ATM90E32 #1
+  - platform: atm90e32
+    cs_pin: 5
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    chip_temperature:
+      name: ${device_name}_temperature
+      accuracy_decimals: 0
+      unit_of_measurement: '°C'
+      icon: "mdi:thermometer"
+    frequency:
+      name: ${device_name}_frequency
+      accuracy_decimals: 2
+      unit_of_measurement: 'Hz'
+      icon: "mdi:sine-wave"
+    phase_a:
+      gain_voltage: ${calibration_v1}
+      gain_ct: ${calibration_ct11}
+      voltage:
+        id: v1
+        name: ${device_name}_volts_ph1
+        accuracy_decimals: 1
+        unit_of_measurement: 'V'
+        icon: "mdi:flash-circle"
+      current:
+        id: ct11
+        name: ${device_name}_${name_ct11}
+        filters:
+          - multiply: 3.0
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+      power_factor:
+        id: pf11
+        name: ${device_name}_pf1
+        accuracy_decimals: 2
+        unit_of_measurement: ''
+        icon: "mdi:transmission-tower"
+
+    phase_b:
+      gain_ct: ${calibration_ct12}
+      current:
+        id: ct12
+        name: ${device_name}_${name_ct12}
+        filters:
+          - multiply: 3.0
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+      power_factor:
+        name: ${device_name}_pf2
+        accuracy_decimals: 2
+        unit_of_measurement: ''
+        icon: "mdi:transmission-tower"
+
+    phase_c:
+      gain_ct: ${calibration_ct13}
+      current:
+        id: ct13
+        name: ${device_name}_${name_ct13}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Main board - ATM90E32 #2
+  - platform: atm90e32
+    cs_pin: 4
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_voltage: ${calibration_v2}
+      gain_ct: ${calibration_ct14}
+      voltage:
+        id: v2
+        name: ${device_name}_volts_ph2
+        accuracy_decimals: 1
+        unit_of_measurement: V
+        icon: "mdi:flash-circle"
+      current:
+        id: ct14
+        name: ${device_name}_${name_ct14}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct15}
+      current:
+        id: ct15
+        name: ${device_name}_${name_ct15}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct16}
+      current:
+        id: ct16
+        name: ${device_name}_${name_ct16}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 1 = ATM90E32 #1
+  - platform: atm90e32
+    cs_pin: 0
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct21}
+      current:
+        id: ct21
+        name: ${device_name}_${name_ct21}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct22}
+      current:
+        id: ct22
+        name: ${device_name}_${name_ct22}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct23}
+      current:
+        id: ct23
+        name: ${device_name}_${name_ct23}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 1 = ATM90E32 #2
+  - platform: atm90e32
+    cs_pin: 16
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct24}
+      current:
+        id: ct24
+        name: ${device_name}_${name_ct24}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct25}
+      current:
+        id: ct25
+        name: ${device_name}_${name_ct25}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct26}
+      current:
+        id: ct26
+        name: ${device_name}_${name_ct26}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 2 = ATM90E32 #1
+  - platform: atm90e32
+    cs_pin: 14
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct31}
+      current:
+        id: ct31
+        name: ${device_name}_${name_ct31}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct32}
+      current:
+        id: ct32
+        name: ${device_name}_${name_ct32}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct33}
+      current:
+        id: ct33
+        name: ${device_name}_${name_ct33}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 2 = ATM90E32 #2
+  - platform: atm90e32
+    cs_pin: 17
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct34}
+      current:
+        id: ct34
+        name: ${device_name}_${name_ct34}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct35}
+      current:
+        id: ct35
+        name: ${device_name}_${name_ct35}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct36}
+      current:
+        id: ct36
+        name: ${device_name}_${name_ct36}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 3 = ATM90E32 #1
+  - platform: atm90e32
+    cs_pin: 15
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct41}
+      current:
+        id: ct41
+        name: ${device_name}_${name_ct41}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct42}
+      current:
+        id: ct42
+        name: ${device_name}_${name_ct42}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct43}
+      current:
+        id: ct43
+        name: ${device_name}_${name_ct43}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Expansion board 3 = ATM90E32 #2
+  - platform: atm90e32
+    cs_pin: 21
+    line_frequency: 60Hz
+    current_phases: 3
+    gain_pga: 1X
+    update_interval: ${update_sensors}
+    phase_a:
+      gain_ct: ${calibration_ct44}
+      current:
+        id: ct44
+        name: ${device_name}_${name_ct44}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_b:
+      gain_ct: ${calibration_ct45}
+      current:
+        id: ct45
+        name: ${device_name}_${name_ct45}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+    phase_c:
+      gain_ct: ${calibration_ct46}
+      current:
+        id: ct46
+        name: ${device_name}_${name_ct46}
+        accuracy_decimals: 2
+        unit_of_measurement: A
+        icon: "mdi:power-plug-outline"
+
+  # Line measurements (voltage/frequency)
+  - platform: template
+    name: ${device_name}_volts
+    lambda: return id(v1).state + id(v2).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_sensors}
+    
+  # Missing circuits
+  - platform: template
+    id: mia_base
+    internal: true
+    lambda: return (id(ct13).state * 2 + id(ct14).state + id(ct15).state + id(ct16).state * 2);
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    id: mia_exp1
+    internal: true
+    lambda: return (id(ct21).state * 2 + id(ct22).state + id(ct23).state * 2 + id(ct24).state * 2 + id(ct25).state * 2 + id(ct26).state);
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    id: mia_exp2
+    internal: true
+    lambda: return (id(ct31).state + id(ct32).state + id(ct33).state + id(ct34).state + id(ct35).state + id(ct36).state);
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    id: mia_exp3
+    internal: true
+    lambda: return (id(ct41).state + id(ct42).state + id(ct43).state + id(ct44).state + id(ct45).state + id(ct46).state);
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    id: totalload
+    name: ${device_name}_load
+    lambda: return (id(ct11).state + id(ct12).state);
+    unit_of_measurement: A
+    accuracy_decimals: 2
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    id: mia
+    name: ${device_name}_mia
+    lambda: return (id(totalload).state - (id(mia_base).state + id(mia_exp1).state + id(mia_exp2).state + id(mia_exp3).state));
+    accuracy_decimals: 2
+    unit_of_measurement: A
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_mia_percent
+    lambda: return (id(mia).state / id(totalload).state) * 100;
+    unit_of_measurement: '%'
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  # Power  
+  - platform: template
+    name: ${device_name}_w
+    id: totalw
+    lambda: return id(ct11).state * id(v1).state + id(ct12).state * id(v2).state;
+    accuracy_decimals: 0
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    name: ${device_name}_kw
+    id: totalkw
+    lambda: return id(totalw).state / 1000;
+    accuracy_decimals: 3
+    unit_of_measurement: kW
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+    
+# Used if metering were implementd
+time:
+  - platform: sntp
+    id: sntp_time    
+
+# Remote reboot option
+switch:
+  - platform: restart
+    name: ${device_name}_restart     
