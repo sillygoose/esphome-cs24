@@ -1,0 +1,267 @@
+# Setup for CircuitSetup 2 channel energy monitor
+# https://esphome.io/components/sensor/atm90e32.html?highlight=circuitsetup
+# 
+# Tested gain settings:
+# 120A/40mA: SCT-016: 19132 (2X PGA gain)
+# Jameco 9VAC Transformer ACU090100/157041: 4034
+
+substitutions:
+  # Node naming
+  device_name: 'cs2'
+
+  # Calibrtion constants
+  calibration_l1: '4034'
+  calibration_l2: '4034'
+  calibration_ct1: '19132'
+  calibration_ct2: '19132'
+  
+  # Update intervals
+  update_internal: 1s
+  update_current: 2s
+  update_voltage: 2s
+  update_power: 2s
+  update_frequency: 15s
+  update_power_factor: 15s
+  update_kwh: 30s
+  update_wifi: 60s
+
+# Device setup
+esphome:
+  name: ${device_name}
+  platform: ESP32
+  board: nodemcu-32s
+
+# Wifi connection
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: !secret cs2_static_ip
+    gateway: !secret wifi_gateway
+    subnet: !secret wifi_subnet
+
+# MQTT broker setup
+mqtt:
+  broker: !secret mqtt_broker 
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  topic_prefix: ${device_name}
+  
+
+# Enable logging
+#logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow over the air updates
+ota:
+
+# Port used for the ESPHome dashboard
+web_server:
+  port: 80
+
+# Pin assignments
+spi:
+  clk_pin: 18
+  miso_pin: 19
+  mosi_pin: 23
+
+sensor:
+  # Wifi
+  - platform: wifi_signal
+    name: ${device_name}_wifi
+    update_interval: ${update_wifi}
+    unit_of_measurement: dB
+
+  # Grid measurements
+  - platform: atm90e32
+    cs_pin: 5
+    line_frequency: 60Hz
+    current_phases: 2
+    gain_pga: 2X
+    update_interval: ${update_internal}
+    frequency:
+      id: freq
+      internal: true
+    phase_a:
+      gain_voltage: ${calibration_l1}
+      gain_ct: ${calibration_ct1}
+      voltage:
+        id: l1v
+        internal: true
+      current:
+        id: ct1c
+        filters:
+          - multiply: 2
+        internal: true
+      power:
+        id: ct1p
+        filters:
+          - multiply: 2
+        internal: true
+      reactive_power:
+        id: rp1
+        filters:
+          - multiply: 2
+        internal: true
+      power_factor:
+        id: pf1
+        internal: true
+
+    phase_c:
+      gain_voltage: ${calibration_l2}
+      gain_ct: ${calibration_ct2}
+      voltage:
+        id: l2v
+        internal: true
+      current:
+        id: ct2c
+        filters:
+          - multiply: 2
+        internal: true
+      power:
+        id: ct2p
+        filters:
+          - multiply: 2
+        internal: true
+      reactive_power:
+        id: rp2
+        filters:
+          - multiply: 2
+        internal: true
+      power_factor:
+        id: pf2
+        internal: true
+
+# Total daily energy sensor (but doesn't reset at midnight)
+  - platform: total_daily_energy
+    id: tde
+    power_id: activePower
+    filters:
+      - multiply: 0.001
+    internal: true
+
+  # Voltage templates  
+  - platform: template
+    name: ${device_name}_l1
+    lambda: return id(l1v).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_voltage}
+    
+  - platform: template
+    name: ${device_name}_l2
+    lambda: return id(l2v).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_voltage}
+    
+  - platform: template
+    name: ${device_name}_mains
+    id: mainsvoltage
+    lambda: return id(l1v).state + id(l2v).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_voltage}
+    
+  # Current templates
+  - platform: template
+    name: ${device_name}_ct1
+    lambda: return id(ct1c).state;
+    accuracy_decimals: 2
+    unit_of_measurement: A
+    icon: "mdi:flash-circle"
+    update_interval: ${update_current}
+    
+  - platform: template
+    name: ${device_name}_ct2
+    lambda: return id(ct2c).state;
+    accuracy_decimals: 2
+    unit_of_measurement: A
+    icon: "mdi:flash-circle"
+    update_interval: ${update_current}
+
+  # Active power templates
+  - platform: template
+    name: ${device_name}_ap1
+    id: activePower1
+    lambda: return id(ct1c).state * id(l1v).state;
+    accuracy_decimals: 0
+    unit_of_measurement: W
+    icon: "mdi:flash-circle"
+    update_interval: ${update_power}
+    
+  - platform: template
+    name: ${device_name}_ap2
+    id: activePower2
+    lambda: return id(ct2c).state * id(l2v).state;
+    accuracy_decimals: 0
+    unit_of_measurement: W
+    icon: "mdi:flash-circle"
+    update_interval: ${update_power}
+
+  - platform: template
+    name: ${device_name}_ap_w
+    id: activePower
+    lambda: return id(activePower1).state + id(activePower2).state;
+    accuracy_decimals: 0
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_power}
+    
+  - platform: template
+    name: ${device_name}_ap_kw
+    lambda: return id(activePower).state / 1000;
+    accuracy_decimals: 3
+    unit_of_measurement: kW
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_power}
+
+  # Frequency and power factor templates
+  - platform: template
+    name: ${device_name}_frequency
+    lambda: return id(freq).state;
+    accuracy_decimals: 2
+    unit_of_measurement: Hz
+    icon: "mdi:sine-wave"
+    update_interval: ${update_frequency}
+    
+  - platform: template
+    name: ${device_name}_pf1
+    lambda: return id(pf1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: ""
+    icon: "mdi:transmission-tower"
+    update_interval: ${update_power_factor}
+
+  - platform: template
+    name: ${device_name}_pf2
+    lambda: return id(pf2).state;
+    accuracy_decimals: 2
+    unit_of_measurement: ""
+    icon: "mdi:transmission-tower"
+    update_interval: ${update_power_factor}
+
+  # Daily total
+  - platform: template
+    name: ${device_name}_today
+    lambda: return id(tde).state;
+    accuracy_decimals: 2
+    unit_of_measurement: kWh
+    icon: "mdi:counter"
+    update_interval: ${update_kwh}
+
+
+# Enable time component to reset total daily energy at midnight
+time:
+  - platform: sntp
+    id: sntp_time    
+
+# Reset button for remote use
+switch:
+  - platform: restart
+    name: ${device_name}_restart     
