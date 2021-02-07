@@ -118,10 +118,10 @@ spi:
 
 sensor:
   # WiFi
-  - platform: wifi_signal
-    name:  ${device_name}_wifi
-    update_interval: ${update_wifi}
-    unit_of_measurement: dB
+  #- platform: wifi_signal
+  #  name:  ${device_name}_wifi
+  #  update_interval: ${update_wifi}
+  #  unit_of_measurement: dB
 
   # Main board - ATM90E32 #1
   - platform: atm90e32
@@ -130,25 +130,20 @@ sensor:
     current_phases: 3
     gain_pga: 1X
     update_interval: ${update_sensors}
-    chip_temperature:
-      name: ${device_name}_temperature
-      accuracy_decimals: 1
-      unit_of_measurement: '°C'
-      icon: "mdi:thermometer"
+    #chip_temperature:
+    #  name: ${device_name}_temperature
+    #  accuracy_decimals: 1
+    #  unit_of_measurement: '°C'
+    #  icon: "mdi:thermometer"
     frequency:
-      name: ${device_name}_frequency
-      accuracy_decimals: 2
-      unit_of_measurement: 'Hz'
-      icon: "mdi:sine-wave"
+      id: freq
+      internal: true
     phase_a:
       gain_voltage: ${calibration_v1}
       gain_ct: ${calibration_ct11}
       voltage:
         id: v1
-        name: ${device_name}_volts_ph1
-        accuracy_decimals: 1
-        unit_of_measurement: 'V'
-        icon: "mdi:flash-circle"
+        internal: true
       current:
         id: ct11
         name: ${device_name}_${name_ct11}
@@ -158,11 +153,8 @@ sensor:
         unit_of_measurement: A
         icon: "mdi:power-plug-outline"
       power_factor:
-        id: pf11
-        name: ${device_name}_pf1
-        accuracy_decimals: 2
-        unit_of_measurement: ''
-        icon: "mdi:transmission-tower"
+        id: pf1
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct12}
@@ -175,10 +167,8 @@ sensor:
         unit_of_measurement: A
         icon: "mdi:power-plug-outline"
       power_factor:
-        name: ${device_name}_pf2
-        accuracy_decimals: 2
-        unit_of_measurement: ''
-        icon: "mdi:transmission-tower"
+        id: pf2
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct13}
@@ -201,10 +191,7 @@ sensor:
       gain_ct: ${calibration_ct14}
       voltage:
         id: v2
-        name: ${device_name}_volts_ph2
-        accuracy_decimals: 1
-        unit_of_measurement: V
-        icon: "mdi:flash-circle"
+        internal: true
       current:
         id: ct14
         name: ${device_name}_${name_ct14}
@@ -443,6 +430,261 @@ sensor:
     icon: "mdi:flash-circle"
     update_interval: ${update_sensors}
     
+  - platform: template
+    name: ${device_name}_volts_ph1
+    lambda: return id(v1).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_volts_ph2
+    lambda: return id(v2).state;
+    accuracy_decimals: 1
+    unit_of_measurement: V
+    icon: "mdi:flash-circle"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_frequency
+    lambda: return id(freq).state;
+    accuracy_decimals: 2
+    unit_of_measurement: 'Hz'
+    icon: "mdi:sine-wave"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_pf1
+    lambda: return id(pf1).state;
+    accuracy_decimals: 1
+    unit_of_measurement: ''
+    icon: "mdi:transmission-tower"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_pf2
+    lambda: return id(pf2).state;
+    accuracy_decimals: 1
+    unit_of_measurement: ''
+    icon: "mdi:transmission-tower"
+    update_interval: ${update_sensors}
+
+  # Power  
+  - platform: template
+    name: ${device_name}_w
+    id: totalw
+    lambda: return id(ct11).state * id(v1).state + id(ct12).state * id(v2).state;
+    accuracy_decimals: 0
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+    
+  - platform: template
+    name: ${device_name}_kw
+    id: totalkw
+    lambda: return id(totalw).state / 1000;
+    accuracy_decimals: 3
+    unit_of_measurement: kW
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  # Current transformer power - board #1
+  - platform: template
+    name: ${device_name}_${name_ct11}_w
+    lambda: return id(ct11).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct12}_w
+    lambda: return id(ct12).state * id(v2).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct13}_w
+    lambda: return id(ct13).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct14}_w
+    lambda: return id(ct14).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct15}_w
+    lambda: return id(ct15).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct16}_w
+    lambda: return id(ct16).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  # Current transformer power - board #2
+  - platform: template
+    name: ${device_name}_${name_ct21}_w
+    lambda: return id(ct21).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct22}_w
+    lambda: return id(ct22).state * id(v2).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct23}_w
+    lambda: return id(ct23).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct24}_w
+    lambda: return id(ct24).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct25}_w
+    lambda: return id(ct25).state * (id(v1).state + id(v2).state);
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct26}_w
+    lambda: return id(ct26).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  # Current transformer power - board #3
+  - platform: template
+    name: ${device_name}_${name_ct31}_w
+    lambda: return id(ct31).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct32}_w
+    lambda: return id(ct32).state * id(v2).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct33}_w
+    lambda: return id(ct33).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct34}_w
+    lambda: return id(ct34).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct35}_w
+    lambda: return id(ct35).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct36}_w
+    lambda: return id(ct36).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  # Current transformer power - board #4
+  - platform: template
+    name: ${device_name}_${name_ct41}_w
+    lambda: return id(ct41).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct42}_w
+    lambda: return id(ct42).state * id(v2).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct43}_w
+    lambda: return id(ct43).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct44}_w
+    lambda: return id(ct44).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct45}_w
+    lambda: return id(ct45).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
+  - platform: template
+    name: ${device_name}_${name_ct46}_w
+    lambda: return id(ct16).state * id(v1).state;
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:power-plug-outline"
+    update_interval: ${update_sensors}
+
   # Missing circuits
   - platform: template
     id: mia_base
@@ -492,32 +734,3 @@ sensor:
     unit_of_measurement: '%'
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
-
-  # Power  
-  - platform: template
-    name: ${device_name}_w
-    id: totalw
-    lambda: return id(ct11).state * id(v1).state + id(ct12).state * id(v2).state;
-    accuracy_decimals: 0
-    unit_of_measurement: W
-    icon: "mdi:power-plug-outline"
-    update_interval: ${update_sensors}
-    
-  - platform: template
-    name: ${device_name}_kw
-    id: totalkw
-    lambda: return id(totalw).state / 1000;
-    accuracy_decimals: 3
-    unit_of_measurement: kW
-    icon: "mdi:power-plug-outline"
-    update_interval: ${update_sensors}
-    
-# Used if metering were implementd
-time:
-  - platform: sntp
-    id: sntp_time    
-
-# Remote reboot option
-switch:
-  - platform: restart
-    name: ${device_name}_restart     
