@@ -117,12 +117,6 @@ spi:
   mosi_pin: 23
 
 sensor:
-  # WiFi
-  #- platform: wifi_signal
-  #  name:  ${device_name}_wifi
-  #  update_interval: ${update_wifi}
-  #  unit_of_measurement: dB
-
   # Main board - ATM90E32 #1
   - platform: atm90e32
     cs_pin: 5
@@ -130,11 +124,6 @@ sensor:
     current_phases: 3
     gain_pga: 1X
     update_interval: ${update_sensors}
-    #chip_temperature:
-    #  name: ${device_name}_temperature
-    #  accuracy_decimals: 1
-    #  unit_of_measurement: '°C'
-    #  icon: "mdi:thermometer"
     frequency:
       id: freq
       internal: true
@@ -146,12 +135,9 @@ sensor:
         internal: true
       current:
         id: ct11
-        name: ${device_name}_${name_ct11}
+        internal: true
         filters:
           - multiply: 3.0
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
       power_factor:
         id: pf1
         internal: true
@@ -160,12 +146,9 @@ sensor:
       gain_ct: ${calibration_ct12}
       current:
         id: ct12
-        name: ${device_name}_${name_ct12}
+        internal: true
         filters:
           - multiply: 3.0
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
       power_factor:
         id: pf2
         internal: true
@@ -174,10 +157,7 @@ sensor:
       gain_ct: ${calibration_ct13}
       current:
         id: ct13
-        name: ${device_name}_${name_ct13}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Main board - ATM90E32 #2
   - platform: atm90e32
@@ -194,28 +174,19 @@ sensor:
         internal: true
       current:
         id: ct14
-        name: ${device_name}_${name_ct14}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct15}
       current:
         id: ct15
-        name: ${device_name}_${name_ct15}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct16}
       current:
         id: ct16
-        name: ${device_name}_${name_ct16}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 1 = ATM90E32 #1
   - platform: atm90e32
@@ -228,28 +199,19 @@ sensor:
       gain_ct: ${calibration_ct21}
       current:
         id: ct21
-        name: ${device_name}_${name_ct21}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct22}
       current:
         id: ct22
-        name: ${device_name}_${name_ct22}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct23}
       current:
         id: ct23
-        name: ${device_name}_${name_ct23}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 1 = ATM90E32 #2
   - platform: atm90e32
@@ -262,28 +224,19 @@ sensor:
       gain_ct: ${calibration_ct24}
       current:
         id: ct24
-        name: ${device_name}_${name_ct24}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct25}
       current:
         id: ct25
-        name: ${device_name}_${name_ct25}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct26}
       current:
         id: ct26
-        name: ${device_name}_${name_ct26}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 2 = ATM90E32 #1
   - platform: atm90e32
@@ -296,28 +249,19 @@ sensor:
       gain_ct: ${calibration_ct31}
       current:
         id: ct31
-        name: ${device_name}_${name_ct31}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct32}
       current:
         id: ct32
-        name: ${device_name}_${name_ct32}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct33}
       current:
         id: ct33
-        name: ${device_name}_${name_ct33}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 2 = ATM90E32 #2
   - platform: atm90e32
@@ -330,28 +274,19 @@ sensor:
       gain_ct: ${calibration_ct34}
       current:
         id: ct34
-        name: ${device_name}_${name_ct34}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct35}
       current:
         id: ct35
-        name: ${device_name}_${name_ct35}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct36}
       current:
         id: ct36
-        name: ${device_name}_${name_ct36}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 3 = ATM90E32 #1
   - platform: atm90e32
@@ -364,28 +299,19 @@ sensor:
       gain_ct: ${calibration_ct41}
       current:
         id: ct41
-        name: ${device_name}_${name_ct41}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct42}
       current:
         id: ct42
-        name: ${device_name}_${name_ct42}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct43}
       current:
         id: ct43
-        name: ${device_name}_${name_ct43}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Expansion board 3 = ATM90E32 #2
   - platform: atm90e32
@@ -398,28 +324,19 @@ sensor:
       gain_ct: ${calibration_ct44}
       current:
         id: ct44
-        name: ${device_name}_${name_ct44}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_b:
       gain_ct: ${calibration_ct45}
       current:
         id: ct45
-        name: ${device_name}_${name_ct45}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
     phase_c:
       gain_ct: ${calibration_ct46}
       current:
         id: ct46
-        name: ${device_name}_${name_ct46}
-        accuracy_decimals: 2
-        unit_of_measurement: A
-        icon: "mdi:power-plug-outline"
+        internal: true
 
   # Line measurements (voltage/frequency)
   - platform: template
