@@ -92,9 +92,9 @@ wifi:
 
 # MQTT broker setup
 mqtt:
-  broker: !secret mqtt_broker 
-  username: !secret mqtt_username
-  password: !secret mqtt_password
+  broker: !secret mqtt2_broker 
+  username: !secret mqtt2_username
+  password: !secret mqtt2_password
   topic_prefix: ${device_name}
 
 # Enable logging
@@ -651,3 +651,4 @@ sensor:
     unit_of_measurement: '%'
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
+

@@ -1,2 +1,14 @@
-/backup
+# Ignore unless overridden)
+secrets.yaml
 
+# Ignore (has own repo)
+
+# Ignore local dirs
+backup/
+
+# Ignore MacOS files
+.DS_Store
+._.DS_Store
+
+# ignore archives
+*.tar.gz
