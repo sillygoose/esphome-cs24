@@ -83,18 +83,18 @@ esphome:
 
 # Wifi connection
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: !secret cs_wifi_ssid
+  password: !secret cs_wifi_password
   manual_ip:
     static_ip: !secret cs24_static_ip
-    gateway: !secret wifi_gateway
-    subnet: !secret wifi_subnet
+    gateway: !secret cs_wifi_gateway
+    subnet: !secret cs_wifi_subnet
 
 # MQTT broker setup
 mqtt:
-  broker: !secret mqtt_broker 
-  username: !secret mqtt_username
-  password: !secret mqtt_password
+  broker: !secret cs_mqtt_broker 
+  username: !secret cs_mqtt_username
+  password: !secret cs_mqtt_password
   topic_prefix: ${device_name}
 
 # Enable logging
@@ -102,7 +102,8 @@ mqtt:
 
 # Enable Home Assistant API
 api:
-
+  password: !secret cs_api_password
+  
 # Allow over the air updates
 ota:
 
