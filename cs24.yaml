@@ -91,18 +91,18 @@ wifi:
     subnet: !secret cs_wifi_subnet
 
 # MQTT broker setup
-mqtt:
-  broker: !secret cs_mqtt_broker 
-  username: !secret cs_mqtt_username
-  password: !secret cs_mqtt_password
-  topic_prefix: ${device_name}
+#mqtt:
+#  broker: !secret cs_mqtt_broker 
+#  username: !secret cs_mqtt_username
+#  password: !secret cs_mqtt_password
+#  topic_prefix: ${device_name}
 
 # Enable logging
-#logger:
+# logger:
 
 # Enable Home Assistant API
 api:
-  password: !secret cs_api_password
+#  password: !secret cs_api_password
   
 # Allow over the air updates
 ota:
@@ -375,18 +375,18 @@ sensor:
   - platform: template
     name: ${device_name}_pf1
     lambda: return id(pf1).state;
-    accuracy_decimals: 1
+    accuracy_decimals: 2
     unit_of_measurement: ''
     icon: "mdi:transmission-tower"
     update_interval: ${update_sensors}
 
-  - platform: template
-    name: ${device_name}_pf2
-    lambda: return id(pf2).state;
-    accuracy_decimals: 1
-    unit_of_measurement: ''
-    icon: "mdi:transmission-tower"
-    update_interval: ${update_sensors}
+  #- platform: template
+  #  name: ${device_name}_pf2
+  #  lambda: return id(pf2).state;
+  #  accuracy_decimals: 2
+  #  unit_of_measurement: ''
+  #  icon: "mdi:transmission-tower"
+  #  update_interval: ${update_sensors}
 
   # Power  
   - platform: template
@@ -411,7 +411,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct11}_w
     lambda: return id(ct11).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -419,7 +419,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct12}_w
     lambda: return id(ct12).state * id(v2).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -427,7 +427,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct13}_w
     lambda: return id(ct13).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -435,7 +435,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct14}_w
     lambda: return id(ct14).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -443,7 +443,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct15}_w
     lambda: return id(ct15).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -451,7 +451,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct16}_w
     lambda: return id(ct16).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -460,7 +460,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct21}_w
     lambda: return id(ct21).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -468,7 +468,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct22}_w
     lambda: return id(ct22).state * id(v2).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -476,7 +476,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct23}_w
     lambda: return id(ct23).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -484,7 +484,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct24}_w
     lambda: return id(ct24).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -492,7 +492,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct25}_w
     lambda: return id(ct25).state * (id(v1).state + id(v2).state);
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -500,7 +500,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct26}_w
     lambda: return id(ct26).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -509,7 +509,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct31}_w
     lambda: return id(ct31).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -517,7 +517,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct32}_w
     lambda: return id(ct32).state * id(v2).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -525,7 +525,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct33}_w
     lambda: return id(ct33).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -533,7 +533,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct34}_w
     lambda: return id(ct34).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -541,7 +541,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct35}_w
     lambda: return id(ct35).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -549,7 +549,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct36}_w
     lambda: return id(ct36).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -558,7 +558,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct41}_w
     lambda: return id(ct41).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -566,7 +566,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct42}_w
     lambda: return id(ct42).state * id(v2).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -574,7 +574,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct43}_w
     lambda: return id(ct43).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -582,7 +582,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct44}_w
     lambda: return id(ct44).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -590,7 +590,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct45}_w
     lambda: return id(ct45).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
@@ -598,7 +598,7 @@ sensor:
   - platform: template
     name: ${device_name}_${name_ct46}_w
     lambda: return id(ct16).state * id(v1).state;
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
