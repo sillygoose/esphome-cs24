@@ -644,7 +644,7 @@ sensor:
     
   - platform: template
     id: metered
-    name: ${device_name}_w_metered
+    name: ${device_name}_metered_w
     lambda: return (id(mia_ct1x).state + id(mia_ct2x).state + id(mia_ct3x).state + id(mia_ct4x).state);
     accuracy_decimals: 0
     unit_of_measurement: W
