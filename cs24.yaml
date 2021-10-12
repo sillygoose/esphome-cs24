@@ -343,7 +343,7 @@ sensor:
   - platform: template
     name: ${device_name}_volts
     lambda: return id(v1).state + id(v2).state;
-    accuracy_decimals: 1
+    accuracy_decimals: 2
     unit_of_measurement: V
     icon: "mdi:flash-circle"
     update_interval: ${update_sensors}
@@ -351,7 +351,7 @@ sensor:
   - platform: template
     name: ${device_name}_volts_ph1
     lambda: return id(v1).state;
-    accuracy_decimals: 1
+    accuracy_decimals: 2
     unit_of_measurement: V
     icon: "mdi:flash-circle"
     update_interval: ${update_sensors}
@@ -359,7 +359,7 @@ sensor:
   - platform: template
     name: ${device_name}_volts_ph2
     lambda: return id(v2).state;
-    accuracy_decimals: 1
+    accuracy_decimals: 2
     unit_of_measurement: V
     icon: "mdi:flash-circle"
     update_interval: ${update_sensors}
@@ -391,25 +391,16 @@ sensor:
   # Power  
   - platform: template
     name: ${device_name}_w
-    id: totalw
     lambda: return id(ct11).state * id(v1).state + id(ct12).state * id(v2).state;
     accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
     
-  - platform: template
-    name: ${device_name}_kw
-    id: totalkw
-    lambda: return id(totalw).state / 1000;
-    accuracy_decimals: 3
-    unit_of_measurement: kW
-    icon: "mdi:power-plug-outline"
-    update_interval: ${update_sensors}
-
   # Current transformer power - board #1
   - platform: template
     name: ${device_name}_${name_ct11}_w
+    id: ct11_w
     lambda: return id(ct11).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -418,6 +409,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct12}_w
+    id: ct12_w
     lambda: return id(ct12).state * id(v2).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -426,6 +418,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct13}_w
+    id: ct13_w
     lambda: return id(ct13).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -434,6 +427,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct14}_w
+    id: ct14_w
     lambda: return id(ct14).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -442,6 +436,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct15}_w
+    id: ct15_w
     lambda: return id(ct15).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -450,6 +445,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct16}_w
+    id: ct16_w
     lambda: return id(ct16).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -459,6 +455,7 @@ sensor:
   # Current transformer power - board #2
   - platform: template
     name: ${device_name}_${name_ct21}_w
+    id: ct21_w
     lambda: return id(ct21).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -467,6 +464,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct22}_w
+    id: ct22_w
     lambda: return id(ct22).state * id(v2).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -475,6 +473,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct23}_w
+    id: ct23_w
     lambda: return id(ct23).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -483,6 +482,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct24}_w
+    id: ct24_w
     lambda: return id(ct24).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -491,6 +491,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct25}_w
+    id: ct25_w
     lambda: return id(ct25).state * (id(v1).state + id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -499,6 +500,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct26}_w
+    id: ct26_w
     lambda: return id(ct26).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -508,6 +510,7 @@ sensor:
   # Current transformer power - board #3
   - platform: template
     name: ${device_name}_${name_ct31}_w
+    id: ct31_w
     lambda: return id(ct31).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -516,6 +519,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct32}_w
+    id: ct32_w
     lambda: return id(ct32).state * id(v2).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -524,6 +528,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct33}_w
+    id: ct33_w
     lambda: return id(ct33).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -532,6 +537,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct34}_w
+    id: ct34_w
     lambda: return id(ct34).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -540,6 +546,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct35}_w
+    id: ct35_w
     lambda: return id(ct35).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -548,6 +555,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct36}_w
+    id: ct36_w
     lambda: return id(ct36).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -556,6 +564,7 @@ sensor:
 
   # Current transformer power - board #4
   - platform: template
+    id: ct41_w
     name: ${device_name}_${name_ct41}_w
     lambda: return id(ct41).state * id(v1).state;
     accuracy_decimals: 0
@@ -565,6 +574,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct42}_w
+    id: ct42_w
     lambda: return id(ct42).state * id(v2).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -573,6 +583,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct43}_w
+    id: ct43_w
     lambda: return id(ct43).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -581,6 +592,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct44}_w
+    id: ct44_w
     lambda: return id(ct44).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -589,6 +601,7 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct45}_w
+    id: ct45_w
     lambda: return id(ct45).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
@@ -597,59 +610,43 @@ sensor:
 
   - platform: template
     name: ${device_name}_${name_ct46}_w
+    id: ct46_w
     lambda: return id(ct16).state * id(v1).state;
     accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
 
-  # Missing circuits
+  # Sum of the measured loads, 
   - platform: template
-    id: mia_base
+    id: mia_ct1x
     internal: true
-    lambda: return (id(ct13).state * 2 + id(ct14).state + id(ct15).state + id(ct16).state * 2);
+    lambda: return (id(ct13_w).state + id(ct14_w).state + id(ct15_w).state + id(ct16_w).state);
     update_interval: ${update_sensors}
     
   - platform: template
-    id: mia_exp1
+    id: mia_ct2x
     internal: true
-    lambda: return (id(ct21).state * 2 + id(ct22).state + id(ct23).state * 2 + id(ct24).state * 2 + id(ct25).state * 2 + id(ct26).state);
+    lambda: return (id(ct21_w).state + id(ct22_w).state + id(ct23_w).state + id(ct24_w).state + id(ct25_w).state + id(ct26_w).state);
     update_interval: ${update_sensors}
     
   - platform: template
-    id: mia_exp2
+    id: mia_ct3x
     internal: true
-    lambda: return (id(ct31).state + id(ct32).state + id(ct33).state + id(ct34).state + id(ct35).state + id(ct36).state);
+    lambda: return (id(ct31_w).state + id(ct32_w).state + id(ct33_w).state + id(ct34_w).state + id(ct35_w).state + id(ct36_w).state);
     update_interval: ${update_sensors}
     
   - platform: template
-    id: mia_exp3
+    id: mia_ct4x
     internal: true
-    lambda: return (id(ct41).state + id(ct42).state + id(ct43).state + id(ct44).state + id(ct45).state + id(ct46).state);
+    lambda: return (id(ct41_w).state + id(ct42_w).state + id(ct43_w).state + id(ct44_w).state + id(ct45_w).state + id(ct46_w).state);
     update_interval: ${update_sensors}
     
   - platform: template
-    id: totalload
-    name: ${device_name}_load
-    lambda: return (id(ct11).state + id(ct12).state);
-    unit_of_measurement: A
-    accuracy_decimals: 2
+    id: metered
+    name: ${device_name}_w_metered
+    lambda: return (id(mia_ct1x).state + id(mia_ct2x).state + id(mia_ct3x).state + id(mia_ct4x).state);
+    accuracy_decimals: 0
+    unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
-    
-  - platform: template
-    id: mia
-    name: ${device_name}_mia
-    lambda: return (id(totalload).state - (id(mia_base).state + id(mia_exp1).state + id(mia_exp2).state + id(mia_exp3).state));
-    accuracy_decimals: 2
-    unit_of_measurement: A
-    icon: "mdi:power-plug-outline"
-    update_interval: ${update_sensors}
-
-  - platform: template
-    name: ${device_name}_mia_percent
-    lambda: return (id(mia).state / id(totalload).state) * 100;
-    unit_of_measurement: '%'
-    icon: "mdi:power-plug-outline"
-    update_interval: ${update_sensors}
-
