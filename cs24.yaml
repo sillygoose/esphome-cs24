@@ -45,8 +45,8 @@ substitutions:
   
   # Update intervals
   update_sensors: 10s
-  update_temperature: 30s
-  update_wifi: 60s
+  sample_rate: '10'
+  update_system: 60s
   
   # Adjust naming
   name_ct11: 'ct11'
@@ -339,6 +339,14 @@ sensor:
         id: ct46
         internal: true
 
+  # System parameters
+  - platform: template
+    name: ${device_name}_sampling
+    lambda: return ${sample_rate};
+    accuracy_decimals: ${sample_rate}
+    unit_of_measurement: seconds
+    disabled_by_default: true
+    
   # Line measurements (voltage/frequency)
   - platform: template
     name: ${device_name}_volts
