@@ -49,7 +49,7 @@ mqtt:
   
 
 # Enable logging
-#logger:
+logger:
 
 # Enable Home Assistant API
 api:

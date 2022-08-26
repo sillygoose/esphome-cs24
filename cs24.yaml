@@ -46,8 +46,7 @@ substitutions:
   # Update intervals
   update_sensors: 10s
   sample_rate: '10'
-  update_system: 60s
-  
+
   # Adjust naming
   name_ct11: 'ct11'
   name_ct12: 'ct12'
@@ -343,7 +342,7 @@ sensor:
   - platform: template
     name: ${device_name}_sampling
     lambda: return ${sample_rate};
-    accuracy_decimals: ${sample_rate}
+    accuracy_decimals: 1
     unit_of_measurement: seconds
     disabled_by_default: true
     
