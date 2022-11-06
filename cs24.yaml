@@ -392,12 +392,21 @@ sensor:
   # Power  
   - platform: template
     name: ${device_name}_w
+    id: demand_w
     lambda: return (id(ct11).state * id(v1).state) + (id(ct12).state * id(v2).state);
     accuracy_decimals: 0
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
     
+  # Energy  
+  - platform: total_daily_energy
+    name: ${device_name}_kwh
+    power_id: demand_w
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
+      
   # Current transformer power - board #1
   - platform: template
     name: ${device_name}_${name_ct11}_w
@@ -618,7 +627,7 @@ sensor:
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
 
-  # Sum of the measured loads, 
+  # Sum of the measured loads
   - platform: template
     id: mia_ct1x
     internal: true
@@ -651,3 +660,8 @@ sensor:
     unit_of_measurement: W
     icon: "mdi:power-plug-outline"
     update_interval: ${update_sensors}
+
+# Enable time component to reset total daily energy at midnight
+time:
+  - platform: sntp
+    id: sntp_time    

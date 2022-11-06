@@ -49,11 +49,11 @@ mqtt:
   
 
 # Enable logging
-#logger:
+logger:
 
 # Enable Home Assistant API
 api:
-  password: !secret cs_api_password
+  #password: !secret cs_api_password
 
 # Allow over the air updates
 ota:
